@@ -12,15 +12,13 @@ class WeatherRepository(
     private val weatherDao: CurrentWeatherDao
 ) {
     suspend fun fetchWeatherData(
-        defaultLocation: DefaultLocation,
-        units: String
+        defaultLocation: DefaultLocation = DefaultLocation(),
     ): Result<OneCallForeCastResponse> =
         try {
             val response = apiService.getOneCallForecast(
                 lat = defaultLocation.latitude,
                 lon = defaultLocation.longitude,
                 apiKey = BuildConfig.OPEN_WEATHER_API_KEY,
-                units = units,
             )
 
             if (response.isSuccessful && response.body() != null) {
@@ -30,6 +28,7 @@ class WeatherRepository(
                 val throwable = mapResponseCodeToThrowable(response.code())
                 throw throwable
             }
+
         } catch (e: Exception) {
             throw e
         }

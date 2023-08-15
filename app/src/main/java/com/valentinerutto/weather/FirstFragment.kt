@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.valentinerutto.weather.databinding.FragmentFirstBinding
 import com.valentinerutto.weather.ui.WeatherViewmodel
@@ -16,7 +17,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
-    private val viewModel: WeatherViewmodel by sharedViewModel()
+    private val weatherViewModel by sharedViewModel<WeatherViewmodel>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -39,14 +40,14 @@ class FirstFragment : Fragment() {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
 
-        viewModel.errorResponse.observe(viewLifecycleOwner) { errorMsg ->
+        weatherViewModel.errorResponse.observe(viewLifecycleOwner) { errorMsg ->
             binding.temperatureTextview.text = errorMsg
         }
 
-        viewModel.successfulResponse.observe(viewLifecycleOwner) {
-            binding.weatherDescriptionTextview.text = it?.current?.weather.toString()
-
+        weatherViewModel.successfulResponse.observe(viewLifecycleOwner) {
+           binding.weatherDescriptionTextview.text = it?.daily?.flatMap { it.weather.map { it.main } }.toString()
         }
+
     }
 
     override fun onDestroyView() {

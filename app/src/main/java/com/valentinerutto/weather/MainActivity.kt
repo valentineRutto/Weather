@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: WeatherViewmodel by viewModel()
+    private val weatherViewModel by viewModel<WeatherViewmodel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +33,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener { view ->
 
-
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
-        viewModel.fetchResponse()
+        weatherViewModel.fetchResponse()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

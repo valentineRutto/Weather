@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.valentinerutto.weather.WeatherRepository
 import com.valentinerutto.weather.core.Result
-import com.valentinerutto.weather.data.network.model.OneCallForeCastResponse
+import com.valentinerutto.weather.data.network.model.ForecastResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() {
-    private val _successResponse = MutableLiveData<OneCallForeCastResponse>()
-    val successfulResponse: LiveData<OneCallForeCastResponse?>
+    private val _successResponse = MutableLiveData<ForecastResponse>()
+    val successfulResponse: LiveData<ForecastResponse?>
         get() = _successResponse
 
     private val _errorResponse = MutableLiveData<String>()

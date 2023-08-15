@@ -1,7 +1,7 @@
 package com.valentinerutto.weather.data.network.api
 
 import com.valentinerutto.weather.data.network.model.CurrentWeatherResponse
-import com.valentinerutto.weather.data.network.model.OneCallForeCastResponse
+import com.valentinerutto.weather.data.network.model.ForecastResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,6 +24,6 @@ interface WeatherApiService {
         @Query("units") units: String = "metric",
         @Query("exclude") exclude: String = "current,minutely,hourly,alerts"
         ,
-    ): Response<OneCallForeCastResponse>
+    ): Response<ForecastResponse>
 
 }

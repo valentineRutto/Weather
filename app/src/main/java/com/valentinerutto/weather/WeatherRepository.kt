@@ -4,16 +4,14 @@ import com.valentinerutto.weather.core.DefaultLocation
 import com.valentinerutto.weather.core.Result
 import com.valentinerutto.weather.data.local.dao.CurrentWeatherDao
 import com.valentinerutto.weather.data.network.api.WeatherApiService
-import com.valentinerutto.weather.data.network.model.OneCallForeCastResponse
+import com.valentinerutto.weather.data.network.model.ForecastResponse
 import com.valentinerutto.weather.data.network.model.mapResponseCodeToThrowable
 
 class WeatherRepository(
-    private val apiService: WeatherApiService,
-    private val weatherDao: CurrentWeatherDao
-) {
+    private val apiService: WeatherApiService,private val weatherDao: CurrentWeatherDao) {
     suspend fun fetchWeatherData(
         defaultLocation: DefaultLocation = DefaultLocation(),
-    ): Result<OneCallForeCastResponse> =
+    ): Result<ForecastResponse> =
         try {
             val response = apiService.getOneCallForecast(
                 lat = defaultLocation.latitude,

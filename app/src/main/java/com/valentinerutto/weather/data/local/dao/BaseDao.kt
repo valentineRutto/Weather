@@ -1,10 +1,12 @@
 package com.valentinerutto.weatherapp.data.local.dao
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Update
 
+@Dao
 interface BaseDao<T> {
 
     @Insert(onConflict = REPLACE)

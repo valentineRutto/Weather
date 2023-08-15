@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.databinding.FragmentFirstBinding
+import com.valentinerutto.weather.ui.ForecastAdapter
+import com.valentinerutto.weather.ui.OnWeatherClicked
 import com.valentinerutto.weather.ui.WeatherViewmodel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -15,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class FirstFragment : Fragment() {
+    private lateinit var weatherAdapter: ForecastAdapter
 
     private var _binding: FragmentFirstBinding? = null
     private val weatherViewModel by sharedViewModel<WeatherViewmodel>()
@@ -35,6 +39,12 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+weatherAdapter = ForecastAdapter(object : OnWeatherClicked{
+
+
+})
+
+
 
         binding.favouriteIcon.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -46,6 +56,13 @@ class FirstFragment : Fragment() {
 
         weatherViewModel.successfulResponse.observe(viewLifecycleOwner) {
            binding.weatherDescriptionTextview.text = it?.daily?.flatMap { it.weather.map { it.main } }.toString()
+          val wweather = it?.daily?.flatMap {
+              it.weather.map { DailyWeatherEntity(id = it.id, weather = it.main, temperature = it.icon) }
+          }
+            binding.weeklyForecastRecyclerview.adapter = weatherAdapter.apply {
+                submitList(wweather)
+            }
+
         }
 
     }

@@ -4,39 +4,55 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.valentinerutto.weather.BuildConfig
 import com.valentinerutto.weather.WeatherRepository
-import com.valentinerutto.weather.core.Result
-import com.valentinerutto.weather.data.network.model.ForecastResponse
+import com.valentinerutto.weather.utils.ResourceStatus
+import com.valentinerutto.weather.utils.WeatherForecast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() {
-    private val _successResponse = MutableLiveData<ForecastResponse>()
-    val successfulResponse: LiveData<ForecastResponse?>
+    private val _successResponse = MutableLiveData<WeatherForecast>()
+    val successfulResponse: LiveData<WeatherForecast?>
         get() = _successResponse
 
     private val _errorResponse = MutableLiveData<String>()
     val errorResponse: LiveData<String>
         get() = _errorResponse
 
+    var _latitude = MutableLiveData<String>()
+    val latitude: LiveData<String>
+        get() = _latitude
 
-    private suspend fun fetch() {
+    var _longitude = MutableLiveData<String>()
+    val longitude: LiveData<String>
+        get() = _longitude
 
-        when (val result = repository.fetchWeatherData()) {
+    lateinit var mlatitude: String
+    lateinit var mlongitude: String
 
-            is Result.Success -> {
-                _successResponse.postValue(result.data!!)
+
+    suspend fun getWeatherAndForecast(
+        latitude: String, longitude: String, appId: String
+    ) {
+        val resource = repository.getWeatherAndForecastData(latitude, longitude, appId)
+
+        when (resource.status) {
+            ResourceStatus.ERROR -> {
+                _errorResponse.postValue(resource.errorType.name)
             }
 
-            is Result.Error -> {
-                _errorResponse.postValue(result.errorType.name)
+            ResourceStatus.SUCCESS -> {
+                _successResponse.postValue(resource.data!!)
             }
         }
     }
 
     fun fetchResponse() {
         viewModelScope.launch(Dispatchers.IO) {
-            fetch()
+            getWeatherAndForecast(
+                latitude.value!!, longitude.value!!, BuildConfig.OPEN_WEATHER_API_KEY
+            )
         }
     }
 

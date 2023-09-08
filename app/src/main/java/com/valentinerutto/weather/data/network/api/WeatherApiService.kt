@@ -10,20 +10,18 @@ interface WeatherApiService {
 
     @GET("weather")
     suspend fun getCurrentWeather(
-        @Query("lat") lat: String,
-        @Query("lon") lon: String,
-        @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric"
-    ): Response<CurrentWeatherResponse>
-
-    @GET("onecall")
+        @Query("lat") lat: String, @Query("lon") lon: String, @Query("appid") apiKey: String
+        ,@Query("units") units: String = "metric"
+    ): Response<CurrentWeatherResponse
+>
+    @GET("forecast")
     suspend fun getOneCallForecast(
         @Query("lat") lat: String,
         @Query("lon") lon: String,
         @Query("appid") apiKey: String,
         @Query("units") units: String = "metric",
         @Query("exclude") exclude: String = "current,minutely,hourly,alerts"
-        ,
-    ): Response<ForecastResponse>
+
+    ): ForecastResponse
 
 }

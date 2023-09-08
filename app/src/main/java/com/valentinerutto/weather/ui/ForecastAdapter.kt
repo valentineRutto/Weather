@@ -10,15 +10,14 @@ import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.databinding.RowWeeklyWeatherBinding
 
 
-interface OnWeatherClicked {
-}
+interface OnWeatherClicked
 
 class ForecastAdapter(var itemClickListener: OnWeatherClicked) :
-    ListAdapter<DailyWeatherEntity,ForecastAdapter.WeatherViewHolder>(
+    ListAdapter<DailyWeatherEntity, ForecastAdapter.WeatherViewHolder>(
         diff
     ) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder{
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         return from(parent)
     }
 
@@ -33,9 +32,10 @@ class ForecastAdapter(var itemClickListener: OnWeatherClicked) :
         fun bind(weather: DailyWeatherEntity, itemClickListener: OnWeatherClicked) {
 
 
-binding.temperatureValueTextview.text =weather.temperature
-            binding.weekDayTextview.text =weather.weather
-binding.forecastIconImageview.setImageResource(R.drawable.ic_rain_2)
+            binding.temperatureValueTextview.text = weather.temperature
+            binding.weekDayTextview.text = weather.day
+
+            binding.forecastIconImageview.setImageResource(setForecastIcon(weather.weatherDesc))
 
         }
 
@@ -62,6 +62,20 @@ binding.forecastIconImageview.setImageResource(R.drawable.ic_rain_2)
                 oldItem: DailyWeatherEntity,
                 newItem: DailyWeatherEntity
             ): Boolean = oldItem.id == newItem.id
+        }
+
+        private fun setForecastIcon(description: String): Int {
+            return if (description.contains("sun", true)) {
+                R.drawable.ic_partlysunny_2
+            } else if (description.contains("clear", true)) {
+                R.drawable.ic_clear_2
+            } else if (description.contains("rain", true)) {
+                R.drawable.ic_rain_2
+            } else if (description.contains("cloud", true)) {
+                R.drawable.ic_cloud // icon added for cloud
+            } else {
+                R.drawable.ic_clear_2
+            }
         }
     }
 

@@ -1,13 +1,8 @@
 package com.valentinerutto.weather.data.network.model
 
-import com.valentinerutto.weather.core.CurrentWeather
-import com.valentinerutto.weather.core.DailyWeather
-import com.valentinerutto.weather.core.ErrorType
-import com.valentinerutto.weather.core.Temperature
-import com.valentinerutto.weather.core.Weather
+import com.valentinerutto.weather.utils.ErrorType
 import java.io.IOException
 import java.net.HttpURLConnection
-import kotlin.math.roundToInt
 
 //fun OneCallForeCastResponse.toCoreModel(unit: String): Weather = Weather(
 //    current = current.toCoreModel(unit = unit),
@@ -44,13 +39,10 @@ fun mapResponseCodeToThrowable(code: Int): Throwable = when (code) {
     else -> GenericException("Generic error : $code")
 }
 
-fun mapThrowableToErrorType(throwable: Throwable): ErrorType {
-    val errorType = when (throwable) {
-        is IOException -> ErrorType.IO_CONNECTION
+fun mapThrowableToErrorType(throwable: Throwable): ErrorType {    val errorType = when (throwable) {
         is ClientException -> ErrorType.CLIENT
-        is ServerException -> ErrorType.SERVER
-        is UnauthorizedException -> ErrorType.UNAUTHORIZED
-        else -> ErrorType.GENERIC
+        is ServerException -> ErrorType.NETWORK
+        else -> ErrorType.NONE
     }
     return errorType
 }

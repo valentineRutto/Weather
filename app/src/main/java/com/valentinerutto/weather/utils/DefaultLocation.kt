@@ -1,4 +1,4 @@
-package com.valentinerutto.weather.core
+package com.valentinerutto.weather.utils
 
 data class DefaultLocation(val longitude: String ="6.773456", val latitude: String="51.227741")
 

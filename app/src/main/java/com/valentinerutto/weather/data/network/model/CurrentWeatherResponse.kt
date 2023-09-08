@@ -2,98 +2,39 @@ package com.valentinerutto.weather.data.network.model
 
 import com.google.gson.annotations.SerializedName
 
+
 data class CurrentWeatherResponse(
-    @SerializedName("base")
-    val base: String?,
-    @SerializedName("clouds")
-    val clouds: Clouds?,
-    @SerializedName("cod")
-    val cod: Int?,
     @SerializedName("coord")
-    val coord: Coord?,
-    @SerializedName("dt")
-    val dt: Int?,
-    @SerializedName("id")
-    val id: Int?,
-    @SerializedName("main")
-    val main: Main?,
-    @SerializedName("name")
-    val name: String?,
-    @SerializedName("rain")
-    val rain: Rain?,
-    @SerializedName("sys")
-    val sys: Sys?,
-    @SerializedName("timezone")
-    val timezone: Int?,
-    @SerializedName("visibility")
-    val visibility: Int?,
+    val coordinate: Coordinate? = null,
     @SerializedName("weather")
-    val weather: List<Weather?>?,
-    @SerializedName("wind")
-    val wind: Wind?
-) {
-    data class Clouds(
-        @SerializedName("all")
-        val all: Int?
-    )
+    val weathers: List<Weather>? = null,
+    @SerializedName("main")
+    val main: Main? = null
+)
 
-    data class Coord(
-        @SerializedName("lat")
-        val lat: Int?,
-        @SerializedName("lon")
-        val lon: Int?
-    )
+data class Coordinate(
+    @SerializedName("lon")
+    val longitude: Float? = null,
+    @SerializedName("lat")
+    val latitude: Float? = null
+)
 
-    data class Main(
-        @SerializedName("feels_like")
-        val feelsLike: Double?,
-        @SerializedName("humidity")
-        val humidity: Int?,
-        @SerializedName("pressure")
-        val pressure: Int?,
-        @SerializedName("temp")
-        val temp: Double?,
-        @SerializedName("temp_max")
-        val tempMax: Double?,
-        @SerializedName("temp_min")
-        val tempMin: Double?
-    )
+data class Weather(
+    @SerializedName("id")
+    val id: Int? = null,
+    @SerializedName("main")
+    val main: String? = null,
+    @SerializedName("description")
+    val description: String? = null,
+    @SerializedName("icon")
+    val icon: String? = null
+)
 
-    data class Rain(
-        @SerializedName("1h")
-        val h: Double?
-    )
-
-    data class Sys(
-        @SerializedName("country")
-        val country: String?,
-        @SerializedName("id")
-        val id: Int?,
-        @SerializedName("sunrise")
-        val sunrise: Int?,
-        @SerializedName("sunset")
-        val sunset: Int?,
-        @SerializedName("type")
-        val type: Int?
-    )
-
-    data class Weather(
-        @SerializedName("description")
-        val description: String?,
-        @SerializedName("icon")
-        val icon: String?,
-        @SerializedName("id")
-        val id: Int?,
-        @SerializedName("main")
-        val main: String?
-    )
-
-    data class Wind(
-        @SerializedName("deg")
-        val deg: Int?,
-        @SerializedName("gust")
-        val gust: Double?,
-        @SerializedName("speed")
-        val speed: Double?
-    )
-}
+data class Main(
+    @SerializedName("temp")
+    val temperature: Float? = null,
+    @SerializedName("temp_max")
+    val temperatureMax: Float? = null,
+    @SerializedName("temp_min")
+    val temperatureMin: Float? = null
+)

@@ -1,33 +1,66 @@
 package com.valentinerutto.weather
 
-import com.valentinerutto.weather.core.DefaultLocation
-import com.valentinerutto.weather.core.Result
 import com.valentinerutto.weather.data.local.dao.CurrentWeatherDao
 import com.valentinerutto.weather.data.network.api.WeatherApiService
-import com.valentinerutto.weather.data.network.model.ForecastResponse
 import com.valentinerutto.weather.data.network.model.mapResponseCodeToThrowable
+import com.valentinerutto.weather.utils.ErrorType
+import com.valentinerutto.weather.utils.Forecast
+import com.valentinerutto.weather.utils.Resource
+import com.valentinerutto.weather.utils.Weather
+import com.valentinerutto.weather.utils.WeatherForecast
+import com.valentinerutto.weather.utils.map
+import com.valentinerutto.weather.utils.mapTemp
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 
 class WeatherRepository(
     private val apiService: WeatherApiService,private val weatherDao: CurrentWeatherDao) {
-    suspend fun fetchWeatherData(
-        defaultLocation: DefaultLocation = DefaultLocation(),
-    ): Result<ForecastResponse> =
-        try {
-            val response = apiService.getOneCallForecast(
-                lat = defaultLocation.latitude,
-                lon = defaultLocation.longitude,
-                apiKey = BuildConfig.OPEN_WEATHER_API_KEY,
-            )
-
-            if (response.isSuccessful && response.body() != null) {
-                Result.Success(response.body()!!)
-
-            } else {
-                val throwable = mapResponseCodeToThrowable(response.code())
-                throw throwable
-            }
-
-        } catch (e: Exception) {
-            throw e
+    private suspend fun getWeatherData(latitude: String, longitude: String, apiKey: String)
+            : Resource<Weather> {
+        val response = apiService.getCurrentWeather(latitude, longitude, apiKey)
+        return if (!response.isSuccessful) {
+            mapResponseCodeToThrowable(response.code())
+            Resource.error(ErrorType.NETWORK, null)
+        } else {
+            Resource.success(map(response.body()))
         }
+    }
+
+    private suspend fun getForecast5Data(latitude: String, longitude: String, apiKey: String)
+            : Resource<List<Forecast>> {
+        val response = apiService.getOneCallForecast(latitude, longitude, apiKey)
+
+        return if (response == null) {
+            Resource.error(ErrorType.NETWORK, null)
+        } else {
+            Resource.success(mapTemp(response))
+        }
+    }
+
+    suspend fun getWeatherAndForecastData(
+        latitude: String,
+        longitude: String,
+        appId: String
+    ): Resource<WeatherForecast> {
+
+        val weatherResource = withContext(NonCancellable) {
+            getWeatherData(latitude, longitude, appId)
+        }
+
+        val forecast5Resource = withContext(NonCancellable) {
+            getForecast5Data(latitude, longitude, appId)
+        }
+
+        return if (weatherResource.data == null || forecast5Resource.data == null)
+            Resource.error(weatherResource.errorType, null)
+        else {
+            Resource.success(
+                WeatherForecast(
+                    weather = weatherResource.data,
+                    forecasts = forecast5Resource.data
+                )
+            )
+        }
+    }
 }
+

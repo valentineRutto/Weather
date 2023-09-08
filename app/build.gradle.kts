@@ -7,6 +7,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("kotlin-kapt")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 fun getApiKey(): String {
@@ -29,7 +30,7 @@ android {
 
     defaultConfig {
         applicationId = "com.valentinerutto.weather"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -59,8 +60,8 @@ android {
 //
 //    }
 
-    kotlinOptions{
-        jvmTarget= "17"
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -72,28 +73,39 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.activity:activity-ktx:1.8.0-beta01")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.0")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.0")
-    implementation("io.insert-koin:koin-android:3.2.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.1")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.1")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+
+    //Koin
+    implementation("io.insert-koin:koin-android:3.4.3")
 
     // Room
-    implementation ("androidx.room:room-runtime:2.5.2")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-runtime:2.5.2")
+    ksp("androidx.room:room-compiler:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
-    implementation ("androidx.room:room-ktx:2.5.2")
-    implementation ("androidx.room:room-runtime:2.5.2")
-    implementation ("io.coil-kt:coil-svg:2.1.0")
-    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-scalars:2.9.0")
+    implementation("androidx.room:room-ktx:2.5.2")
+    // Google Play Service
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    // Google Play Service Maps
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
+//coil
+    implementation("io.coil-kt:coil-svg:2.1.0")
+
+    //Retrofit
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -119,6 +119,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="current"
+            android:layout_marginTop="4dp"
+
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toStartOf="@+id/maximum_temperature_textview"
             app:layout_constraintHorizontal_bias="0.5"
@@ -129,8 +131,8 @@
             android:id="@+id/maximum_temperature_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:text="max"
+            android:layout_marginTop="4dp"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

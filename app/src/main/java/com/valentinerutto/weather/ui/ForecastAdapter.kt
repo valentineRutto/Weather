@@ -10,8 +10,7 @@ import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.databinding.RowWeeklyWeatherBinding
 
 
-
-class ForecastAdapter:
+class ForecastAdapter :
     ListAdapter<DailyWeatherEntity, ForecastAdapter.WeatherViewHolder>(
         diff
     ) {
@@ -21,23 +20,18 @@ class ForecastAdapter:
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-        val album = getItem(position)
-        holder.bind(album)
+        val weather = getItem(position)
+        holder.bind(weather)
     }
 
     class WeatherViewHolder(private val binding: RowWeeklyWeatherBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(weather: DailyWeatherEntity) {
-
-
             binding.temperatureValueTextview.text = weather.temperature
             binding.weekDayTextview.text = weather.day
-
             binding.forecastIconImageview.setImageResource(setForecastIcon(weather.weatherDesc))
-
         }
-
     }
 
     companion object {
@@ -77,6 +71,5 @@ class ForecastAdapter:
             }
         }
     }
-
 
 }

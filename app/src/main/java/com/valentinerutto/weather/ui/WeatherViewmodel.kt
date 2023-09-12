@@ -3,11 +3,15 @@ package com.valentinerutto.weather.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.valentinerutto.weather.BuildConfig
 import com.valentinerutto.weather.WeatherRepository
 import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.utils.DefaultLocation
 import com.valentinerutto.weather.utils.ResourceStatus
-import com.valentinerutto.weather.utils.WeatherForecast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() {
     private val _successResponse = MutableLiveData<List<DailyWeatherEntity>>()
@@ -27,25 +31,42 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
         get() = _isLoading
 
     suspend fun getWeatherAndForecast(
-        latitude: String, longitude: String, appId: String
+        latitude: String, longitude: String
     ) {
-        _isLoading.value = true
 
-        val resource = repository.getWeatherAndForecastData(latitude, longitude, appId)
+        _isLoading.postValue(true)
+
+
+        val resource = repository.getWeatherAndForecastData(
+            latitude, longitude, BuildConfig.OPEN_WEATHER_API_KEY
+        )
 
         when (resource.status) {
 
             ResourceStatus.ERROR -> {
-                _isLoading.value = false
+
+                _isLoading.postValue(false)
+
                 _errorResponse.postValue(resource.errorType.name)
             }
 
             ResourceStatus.SUCCESS -> {
-                _isLoading.value = false
+                withContext(Dispatchers.Main) {
+
+                    _isLoading.value = false
+                }
                 _successResponse.postValue(resource.data!!)
             }
         }
     }
 
 
+    fun fetchSaveWeather(latitude: String, longitude: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getWeatherAndForecast(latitude, longitude)
+        }
+    }
+    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity){
+        return repository.updateWeatherData(dailyWeatherEntity)
+    }
 }

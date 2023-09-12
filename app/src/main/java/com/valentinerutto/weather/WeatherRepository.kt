@@ -62,7 +62,6 @@ class WeatherRepository(
             weatherResource.errorType,
             null
         )
-
         else {
 
             val entity = mapToEntity(
@@ -74,10 +73,13 @@ class WeatherRepository(
             weatherDao.insert(entity)
 
             Resource.success(
-                data = weatherDao.getSavedWeather()
+                data = entity
             )
 
         }
+    }
+    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity){
+        weatherDao.update(dailyWeatherEntity)
     }
 }
 

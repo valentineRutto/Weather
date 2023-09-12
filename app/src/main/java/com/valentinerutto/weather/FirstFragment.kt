@@ -52,10 +52,15 @@ class FirstFragment : Fragment() {
 
         setupObservers()
 
-        binding.favoritesFloatingActionButton.setOnClickListener {
+        binding.showFavFab.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
         }
+        binding.addFavouriteFab.setOnClickListener {
 
+            lifecycleScope.launch {
+                //weatherViewModel.updateWeatherData()
+            }
+        }
 
     }
 
@@ -65,11 +70,9 @@ class FirstFragment : Fragment() {
 
             DEFAULT_LONGITUDE = it.longitude
 
-            lifecycleScope.launch {
-                weatherViewModel.getWeatherAndForecast(
-                    DEFAULT_LATITUDE, DEFAULT_LONGITUDE, BuildConfig.OPEN_WEATHER_API_KEY
-                )
-            }
+            weatherViewModel.fetchSaveWeather(
+                DEFAULT_LATITUDE, DEFAULT_LONGITUDE
+            )
         }
 
         weatherViewModel.errorResponse.observe(viewLifecycleOwner) { errorMsg ->
@@ -86,32 +89,36 @@ class FirstFragment : Fragment() {
 
     }
 
-    private fun setUpViews(weatherForecast: List<DailyWeatherEntity>) {
+    private fun setUpViews(
+        weatherForecast: List<DailyWeatherEntity>
+    ) {
+        weatherForecast.map { currentWeatherEntitiy ->
 
-        val daily = weatherForecast.map { weatherForecast ->
+            binding.weatherDescriptionTextview.text = currentWeatherEntitiy.weatherDesc
 
-            binding.weatherDescriptionTextview.text = weatherForecast.weatherDesc
-            binding.temperatureTextview.text = weatherForecast.temperature.toString()
+            binding.temperatureTextview.text = currentWeatherEntitiy.temperature.toString()
 
-            binding.maximumTemperatureTitle.text = weatherForecast.temperatureMax.toString()
+            binding.maximumTemperatureTitle.text = currentWeatherEntitiy.temperatureMax.toString()
 
-            binding.minimumTemperatureTexview.text = weatherForecast.temperatureMin.toString()
+            binding.minimumTemperatureTexview.text = currentWeatherEntitiy.temperatureMin.toString()
 
-            binding.currentTemperatureTextview.text = weatherForecast.temperature.toString()
+            binding.currentTemperatureTextview.text = currentWeatherEntitiy.temperature.toString()
+
             setBackground(
                 requireActivity(),
-                weatherForecast.weather,
+                currentWeatherEntitiy.weather,
                 binding.weeklyForecastRecyclerview,
                 binding.currentWeatherLayout,
                 binding.weatherTextLayout
             )
         }
+
         weatherAdapter = ForecastAdapter()
         binding.weeklyForecastRecyclerview.adapter = weatherAdapter.apply {
             submitList(weatherForecast)
         }
-    }
 
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

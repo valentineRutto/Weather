@@ -3,6 +3,7 @@ package com.valentinerutto.weatherapp.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Update
 
@@ -15,7 +16,7 @@ interface BaseDao<T> {
     @Insert(onConflict = REPLACE)
     suspend fun insert(vararg items: T)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(items: List<T>)
 
     @Update(onConflict = REPLACE)

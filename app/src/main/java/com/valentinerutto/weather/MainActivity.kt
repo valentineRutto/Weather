@@ -1,25 +1,25 @@
 package com.valentinerutto.weather
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.location.Location
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.valentinerutto.weather.databinding.ActivityMainBinding
 import com.valentinerutto.weather.ui.WeatherViewmodel
+import com.valentinerutto.weather.utils.Constants
+import com.valentinerutto.weather.utils.DefaultLocation
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val weatherViewModel by viewModel<WeatherViewmodel>()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +46,8 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
-      //  locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-startLocationService()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        checkPermission()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -70,84 +71,31 @@ startLocationService()
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    private fun startLocationService() {
+    private fun checkPermission() {
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            startService(Intent(this, LocationService::class.java))
-        } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                val builder = AlertDialog.Builder(this)
-                builder.setMessage("Location permission is required to get current location!")
-                    .setTitle("Permission required")
-                builder.setPositiveButton("OK") { dialog, id ->
-                    locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                }
-                val dialog = builder.create()
-                dialog.show()
-            } else {
-                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
-    }
-
-    private val locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            startService(Intent(this, LocationService::class.java))
-        } else {
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("Location permission is required to get current location!")
-                .setTitle("Permission required")
-            builder.setPositiveButton("OK") { dialog, id ->
-                dialog.dismiss()
-            }
-        }
-    }
-
-    private val appSettingsLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (ContextCompat.checkSelfPermission(
+        if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
-            //startService(Intent(this, LocationService::class.java))
+
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                Constants.LOCATION_REQUEST_CODE
+            )
+            return
         }
-    }
 
-    private fun openAppSettings() {
-
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", this.packageName, null)
-        intent.data = uri
-        appSettingsLauncher.launch(intent)
-    }
-
-    //    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//        if(requestCode == LOCATION_REQUEST_CODE) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permission granted
-//            } else {
-//                // Permission denied - make request again
-//                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_REQUEST_CODE)
-//            }
-//        }
-//    }
-    override fun onPause() {
-        super.onPause()
-        stopService(Intent(this, LocationService::class.java))
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                weatherViewModel._location.value =
+                    DefaultLocation(location.longitude.toString(), location.latitude.toString())
+            } else {
+                Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 }

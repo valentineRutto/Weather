@@ -1,21 +1,21 @@
 package com.valentinerutto.weather.di
 
-import androidx.room.Room
 import com.valentinerutto.weather.App
 import com.valentinerutto.weather.WeatherRepository
-import com.valentinerutto.weather.utils.Constants
 import com.valentinerutto.weather.data.WeatherDatabase
 import com.valentinerutto.weather.data.network.api.WeatherApiService
 import com.valentinerutto.weather.ui.WeatherViewmodel
+import com.valentinerutto.weather.utils.Constants
 import com.valentinerutto.weatherapp.data.network.api.RetrofitClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.scope.Scope
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
-val appModules = module{
+val appModules = module {
 
-    single { App.INSTANCE}
+    single { App.INSTANCE }
 
     single<WeatherApiService> {
         (get() as Retrofit).create(
@@ -30,19 +30,16 @@ val appModules = module{
         RetrofitClient.createRetrofit(Constants.BASE_URL, get())
     }
 
-    single{
-        Room.databaseBuilder(androidContext(),
-            WeatherDatabase::class.java,Constants.DB_NAME).fallbackToDestructiveMigration()
-            .build()
-    }
+    single { WeatherDatabase.getDatabase(context = androidContext()) }
 
-    single { get<WeatherDatabase>().currentWeatherDao() }
 
     single {
-        WeatherRepository(get(),get())
+        WeatherRepository(get(), weatherDao = database().weatherDao())
     }
 
-viewModel { WeatherViewmodel(get()) }
+    viewModel { WeatherViewmodel(get()) }
 }
+
+fun Scope.database() = get<WeatherDatabase>()
 
 

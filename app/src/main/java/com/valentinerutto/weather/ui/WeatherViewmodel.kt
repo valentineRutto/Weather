@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.valentinerutto.weather.WeatherRepository
+import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.utils.DefaultLocation
 import com.valentinerutto.weather.utils.ResourceStatus
 import com.valentinerutto.weather.utils.WeatherForecast
 
 class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() {
-    private val _successResponse = MutableLiveData<WeatherForecast>()
-    val successfulResponse: LiveData<WeatherForecast?>
+    private val _successResponse = MutableLiveData<List<DailyWeatherEntity>>()
+    val successfulResponse: LiveData<List<DailyWeatherEntity>?>
         get() = _successResponse
 
     private val _errorResponse = MutableLiveData<String>()
@@ -29,12 +30,13 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
         latitude: String, longitude: String, appId: String
     ) {
         _isLoading.value = true
+
         val resource = repository.getWeatherAndForecastData(latitude, longitude, appId)
 
         when (resource.status) {
+
             ResourceStatus.ERROR -> {
                 _isLoading.value = false
-
                 _errorResponse.postValue(resource.errorType.name)
             }
 

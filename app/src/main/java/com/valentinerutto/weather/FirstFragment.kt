@@ -13,10 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
 import com.valentinerutto.weather.databinding.FragmentFirstBinding
 import com.valentinerutto.weather.ui.ForecastAdapter
-import com.valentinerutto.weather.ui.OnWeatherClicked
 import com.valentinerutto.weather.ui.WeatherViewmodel
-import com.valentinerutto.weather.utils.WeatherForecast
-import com.valentinerutto.weather.utils.getDayOfWeek
 import com.valentinerutto.weather.utils.setBackground
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -50,12 +47,10 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         (activity as AppCompatActivity).supportActionBar?.title = "Weather"
 
         setupObservers()
-
-        weatherAdapter = ForecastAdapter(object : OnWeatherClicked {})
-
 
         binding.favoritesFloatingActionButton.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
@@ -91,37 +86,29 @@ class FirstFragment : Fragment() {
 
     }
 
-    private fun setUpViews(weatherForecast: WeatherForecast) {
-        binding.weatherDescriptionTextview.text = weatherForecast.weather.main
-        binding.temperatureTextview.text = weatherForecast.weather.temperature.toString()
+    private fun setUpViews(weatherForecast: List<DailyWeatherEntity>) {
 
-        binding.maximumTemperatureTitle.text = weatherForecast.weather.temperatureMax.toString()
+        val daily = weatherForecast.map { weatherForecast ->
 
-        binding.minimumTemperatureTexview.text = weatherForecast.weather.temperatureMin.toString()
+            binding.weatherDescriptionTextview.text = weatherForecast.weatherDesc
+            binding.temperatureTextview.text = weatherForecast.temperature.toString()
 
-        binding.currentTemperatureTextview.text = weatherForecast.weather.temperature.toString()
+            binding.maximumTemperatureTitle.text = weatherForecast.temperatureMax.toString()
 
-        val daily = weatherForecast.forecasts.map {
-            DailyWeatherEntity(
-                id = 0,
-                weather = it.description,
+            binding.minimumTemperatureTexview.text = weatherForecast.temperatureMin.toString()
 
-                temperature = it.temperature.toString(),
-                day = getDayOfWeek(it.timeStampL),
-                weatherDesc = weatherForecast.weather.main
+            binding.currentTemperatureTextview.text = weatherForecast.temperature.toString()
+            setBackground(
+                requireActivity(),
+                weatherForecast.weather,
+                binding.weeklyForecastRecyclerview,
+                binding.currentWeatherLayout,
+                binding.weatherTextLayout
             )
-
         }
-        setBackground(
-            requireActivity(),
-            weatherForecast.weather.main,
-            binding.weeklyForecastRecyclerview,
-            binding.currentWeatherLayout,
-            binding.weatherTextLayout
-        )
-
+        weatherAdapter = ForecastAdapter()
         binding.weeklyForecastRecyclerview.adapter = weatherAdapter.apply {
-            submitList(daily)
+            submitList(weatherForecast)
         }
     }
 

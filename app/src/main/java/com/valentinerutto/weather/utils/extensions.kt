@@ -5,6 +5,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.valentinerutto.weather.R
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -102,4 +104,8 @@ fun setBackground(
 
 fun getDayOfWeek(timestamp: Long): String {
     return SimpleDateFormat("EEEE", Locale.ENGLISH).format(timestamp * 1000)
+}
+fun getCurrentDateTime():String{
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+ return LocalDateTime.now().format(formatter)
 }

@@ -11,10 +11,9 @@ import com.valentinerutto.weather.utils.DefaultLocation
 import com.valentinerutto.weather.utils.ResourceStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() {
-    private val _successResponse = MutableLiveData<List<DailyWeatherEntity>>()
+    val _successResponse = MutableLiveData<List<DailyWeatherEntity>>()
     val successfulResponse: LiveData<List<DailyWeatherEntity>?>
         get() = _successResponse
 
@@ -30,12 +29,14 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+
+    private val _favouriteList = MutableLiveData<List<DailyWeatherEntity>?>()
+    val favouriteList: LiveData<List<DailyWeatherEntity>?>
+        get() = _favouriteList
+
     suspend fun getWeatherAndForecast(
         latitude: String, longitude: String
     ) {
-
-        _isLoading.postValue(true)
-
 
         val resource = repository.getWeatherAndForecastData(
             latitude, longitude, BuildConfig.OPEN_WEATHER_API_KEY
@@ -44,17 +45,10 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
         when (resource.status) {
 
             ResourceStatus.ERROR -> {
-
-                _isLoading.postValue(false)
-
                 _errorResponse.postValue(resource.errorType.name)
             }
 
             ResourceStatus.SUCCESS -> {
-                withContext(Dispatchers.Main) {
-
-                    _isLoading.value = false
-                }
                 _successResponse.postValue(resource.data!!)
             }
         }
@@ -66,7 +60,15 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
             getWeatherAndForecast(latitude, longitude)
         }
     }
-    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity){
+
+    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity) {
         return repository.updateWeatherData(dailyWeatherEntity)
+    }
+
+    suspend fun getSavedData(
+    ): List<DailyWeatherEntity> {
+
+        return repository.getSavedData()
+
     }
 }

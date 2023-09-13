@@ -9,6 +9,7 @@ import com.valentinerutto.weather.utils.Forecast
 import com.valentinerutto.weather.utils.Resource
 import com.valentinerutto.weather.utils.Weather
 import com.valentinerutto.weather.utils.WeatherForecast
+import com.valentinerutto.weather.utils.getCurrentDateTime
 import com.valentinerutto.weather.utils.map
 import com.valentinerutto.weather.utils.mapTemp
 import com.valentinerutto.weather.utils.mapToEntity
@@ -19,9 +20,7 @@ class WeatherRepository(
     private val apiService: WeatherApiService, private val weatherDao: WeatherDao
 ) {
     private suspend fun getWeatherData(
-        latitude: String,
-        longitude: String,
-        apiKey: String
+        latitude: String, longitude: String, apiKey: String
     ): Resource<Weather> {
         val response = apiService.getCurrentWeather(latitude, longitude, apiKey)
         return if (!response.isSuccessful) {
@@ -33,9 +32,7 @@ class WeatherRepository(
     }
 
     private suspend fun getForecast5Data(
-        latitude: String,
-        longitude: String,
-        apiKey: String
+        latitude: String, longitude: String, apiKey: String
     ): Resource<List<Forecast>> {
         val response = apiService.getOneCallForecast(latitude, longitude, apiKey)
 
@@ -59,8 +56,7 @@ class WeatherRepository(
         }
 
         return if (weatherResource.data == null || forecast5Resource.data == null) Resource.error(
-            weatherResource.errorType,
-            null
+            weatherResource.errorType, null
         )
         else {
 
@@ -70,15 +66,33 @@ class WeatherRepository(
                 )
             )
 
+            val weatherList = weatherDao.getSavedWeather()
+
+            if (weatherList.isNotEmpty()
+                && weatherList[0].lastUpdated
+                != getCurrentDateTime()
+            ) {
+                weatherDao.deleteAll()
+            }
+
             weatherDao.insert(entity)
 
             Resource.success(
-                data = entity
+                data = weatherDao.getSavedWeather()
             )
-
         }
     }
-    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity){
+
+    suspend fun getFavourite(): Resource<List<DailyWeatherEntity>> {
+        val favouriteLocation = weatherDao.getFavouriteWeather()
+        return Resource.success(data = favouriteLocation)
+    }
+
+    suspend fun getSavedData(): List<DailyWeatherEntity> {
+        return weatherDao.getSavedWeather()
+    }
+
+    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity) {
         weatherDao.update(dailyWeatherEntity)
     }
 }

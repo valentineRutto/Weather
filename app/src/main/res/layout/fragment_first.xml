@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_layout"
@@ -45,6 +44,19 @@
             app:layout_constraintTop_toBottomOf="@+id/temperature_textview"
             tools:text="Sunny" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/last_update_textview"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/weather_description_textview"
+            app:layout_constraintStart_toStartOf="@+id/weather_description_textview"
+            app:layout_constraintTop_toBottomOf="@+id/weather_description_textview"
+            tools:text="Last Update" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,7 +89,6 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/tv_current_value"
-
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/tv_current_value"
             app:layout_constraintTop_toTopOf="@+id/minimum_temperature_texview"
@@ -90,10 +101,9 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/maximum_temperature_textview"
-            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/maximum_temperature_textview"
-            app:layout_constraintTop_toTopOf="@+id/minimum_temperature_texview"
-            />
+            app:layout_constraintTop_toTopOf="@+id/minimum_temperature_texview" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_min_value"
@@ -129,7 +139,7 @@
             android:text="Max"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.1"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_current_value"
             app:layout_constraintTop_toTopOf="@+id/tv_current_value" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -139,8 +149,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:padding="2dp"
         android:background="@android:color/white"
+        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/weather_text_layout" />
@@ -155,7 +165,22 @@
         app:layout_constraintHorizontal_bias="0.561"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.606" />
+        app:layout_constraintVertical_bias="0.5" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Empty data:Check internet connection"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/weekly_forecast_recyclerview"
@@ -170,93 +195,93 @@
         tools:listitem="@layout/row_weekly_weather" />
 
 
+    <!--This will be the parent Floating Action Button-->
+    <!--After the implementation the Floating Action Button at
+        the bottom right corner as we have constrained accordingly-->
+    <!--After clicking the above button the
+        following two buttons will pop up.
+        So this button is considered as parent FAB-->
+    <!--After opening the application it looks like regular
+        FAB but after user clicks it, it extends-->
+    <!--This functionality has been handled in the MainActivity.java-->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/more_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/teal_200"
+        android:text="Actions"
+        app:icon="@android:drawable/ic_menu_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!--This will be the parent Floating Action Button-->
-        <!--After the implementation the Floating Action Button at
-            the bottom right corner as we have constrained accordingly-->
-        <!--After clicking the above button the
-            following two buttons will pop up.
-            So this button is considered as parent FAB-->
-        <!--After opening the application it looks like regular
-            FAB but after user clicks it, it extends-->
-        <!--This functionality has been handled in the MainActivity.java-->
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/more_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/teal_200"
-            android:text="Actions"
-            app:icon="@android:drawable/ic_menu_add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <!--Floating action button for add alarm-->
+    <!--Make sure that you are constraining this
+        button to the parent button-->
+    <!--Make sure to add backgroundTint attribute to match
+        the entire application color-->
+    <!--because after changing the base application theme the color
+        of the FAB is set Blue as default-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/show_fav_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/teal_200"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/more_fab"
+        app:layout_constraintEnd_toEndOf="@+id/more_fab"
+        app:srcCompat="@android:drawable/ic_menu_more" />
 
-        <!--Floating action button for add alarm-->
-        <!--Make sure that you are constraining this
-            button to the parent button-->
-        <!--Make sure to add backgroundTint attribute to match
-            the entire application color-->
-        <!--because after changing the base application theme the color
-            of the FAB is set Blue as default-->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/show_fav_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/teal_200"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toTopOf="@+id/more_fab"
-            app:layout_constraintEnd_toEndOf="@+id/more_fab"
-            app:srcCompat="@android:drawable/ic_menu_more" />
+    <!--Action name text for the add alarm button-->
+    <!--Make sure that you are constraining this
+        Text to the add Alarm FAB button-->
+    <TextView
+        android:id="@+id/show_fav_action_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
 
-        <!--Action name text for the add alarm button-->
-        <!--Make sure that you are constraining this
-            Text to the add Alarm FAB button-->
-        <TextView
-            android:id="@+id/show_fav_action_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Favourite"
-            app:layout_constraintBottom_toBottomOf="@+id/show_fav_fab"
-            app:layout_constraintEnd_toStartOf="@+id/show_fav_fab"
-            app:layout_constraintTop_toTopOf="@+id/show_fav_fab" />
+        android:text="Show Favourite"
+        app:layout_constraintBottom_toBottomOf="@+id/show_fav_fab"
+        app:layout_constraintEnd_toStartOf="@+id/show_fav_fab"
+        app:layout_constraintTop_toTopOf="@+id/show_fav_fab" />
 
-        <!--Floating action button for add person-->
-        <!--Make sure that you are constraining this button
-            to the add Alarm FAB button-->
-        <!--Make sure to add backgroundTint attribute to match
-            the entire application color-->
-        <!--because after changing the base application theme
-            the color of the FAB is set Blue as default-->
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_favourite_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/teal_200"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toTopOf="@+id/show_fav_fab"
-            app:layout_constraintEnd_toEndOf="@+id/show_fav_fab"
-            app:layout_constraintStart_toStartOf="@+id/show_fav_fab"
-            app:srcCompat="@android:drawable/ic_menu_add" />
+    <!--Floating action button for add person-->
+    <!--Make sure that you are constraining this button
+        to the add Alarm FAB button-->
+    <!--Make sure to add backgroundTint attribute to match
+        the entire application color-->
+    <!--because after changing the base application theme
+        the color of the FAB is set Blue as default-->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_favourite_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/teal_200"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/show_fav_fab"
+        app:layout_constraintEnd_toEndOf="@+id/show_fav_fab"
+        app:layout_constraintStart_toStartOf="@+id/show_fav_fab"
+        app:srcCompat="@android:drawable/ic_menu_add" />
 
-        <!--Action name text for the add person button-->
-        <!--Make sure that you are constraining this Text
-            to the add Person FAB button-->
-        <TextView
-            android:id="@+id/add_fav_action_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text="Add Favourite"
-            app:layout_constraintBottom_toBottomOf="@+id/add_favourite_fab"
-            app:layout_constraintEnd_toStartOf="@+id/add_favourite_fab"
-            app:layout_constraintTop_toTopOf="@+id/add_favourite_fab" />
+    <!--Action name text for the add person button-->
+    <!--Make sure that you are constraining this Text
+        to the add Person FAB button-->
+    <TextView
+        android:id="@+id/add_fav_action_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Add Favourite"
+        app:layout_constraintBottom_toBottomOf="@+id/add_favourite_fab"
+        app:layout_constraintEnd_toStartOf="@+id/add_favourite_fab"
+        app:layout_constraintTop_toTopOf="@+id/add_favourite_fab" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

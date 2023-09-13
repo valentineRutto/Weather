@@ -13,5 +13,4 @@ data class CurrentWeatherEntitiy(
     val temperatureMax: String,
     val temperatureMin: String,
     val isFavorite: Boolean
-
 )

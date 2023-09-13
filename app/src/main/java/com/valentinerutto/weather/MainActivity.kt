@@ -9,17 +9,18 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.material.snackbar.Snackbar
 import com.valentinerutto.weather.databinding.ActivityMainBinding
 import com.valentinerutto.weather.ui.WeatherViewmodel
 import com.valentinerutto.weather.utils.Constants
 import com.valentinerutto.weather.utils.DefaultLocation
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -87,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             if (location != null) {
                 weatherViewModel._location.value =
                     DefaultLocation(location.longitude.toString(), location.latitude.toString())
+
             } else {
                 Toast.makeText(this, "Cannot get location.", Toast.LENGTH_SHORT).show()
             }

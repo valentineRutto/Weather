@@ -33,14 +33,13 @@ fun mapTemp(response: ForecastResponse?): List<Forecast> {
 fun mapToEntity(weatherForecast: WeatherForecast): List<DailyWeatherEntity> {
     return weatherForecast.forecasts.map {
         DailyWeatherEntity(
-            id = 0,
             weather = it.description,
             temperatureMax = weatherForecast.weather.temperatureMax.toString(),
             temperatureMin = weatherForecast.weather.temperatureMin.toString(),
             temperature = it.temperature.toString(),
             day = getDayOfWeek(it.timeStampL),
             weatherDesc = weatherForecast.weather.main,
-            lastUpdated = getCurrentDateTime(),
+            lastUpdated =getCurrentDateTime(),
             isFavorite = false
         )
     }

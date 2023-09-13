@@ -2,8 +2,8 @@
     <string name="app_name">Weather</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
+    <string name="first_fragment_label">Weather</string>
+    <string name="second_fragment_label">Favourite Location</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -19,4 +19,5 @@
     <string name="error_client">Oops,something fishy is up on your end :)</string>
     <string name="error_server">Oops! Something is wrong on our end :(</string>
     <string name="error_generic">Something is happening that\'s disturbing the force :(</string>
-    <string name="error_connection">Check your internet connection and try again</string></resources>
+    <string name="error_connection">Check your internet connection and try again</string>
+</resources>

@@ -1,6 +1,10 @@
 package com.valentinerutto.weather.utils
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.valentinerutto.weather.R
@@ -105,7 +109,36 @@ fun setBackground(
 fun getDayOfWeek(timestamp: Long): String {
     return SimpleDateFormat("EEEE", Locale.ENGLISH).format(timestamp * 1000)
 }
+@RequiresApi(Build.VERSION_CODES.O)
 fun getCurrentDateTime():String{
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
  return LocalDateTime.now().format(formatter)
+}
+
+ fun checkForInternet(context: Context): Boolean {
+
+    // register activity with the connectivity manager service
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+        val network = connectivityManager.activeNetwork ?: return false
+
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
+            // else return false
+            else -> false
+        }
+    } else {
+        // if the android version is below M
+        @Suppress("DEPRECATION") val networkInfo =
+            connectivityManager.activeNetworkInfo ?: return false
+        @Suppress("DEPRECATION")
+        return networkInfo.isConnected
+    }
 }

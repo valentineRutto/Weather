@@ -35,6 +35,7 @@ class FirstFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var isAllFabsVisible: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -45,15 +46,45 @@ class FirstFragment : Fragment() {
 
     }
 
+    fun hideAllFab() {
+        binding.addFavouriteFab.visibility = View.GONE
+        binding.addFavActionText.visibility = View.GONE
+        binding.showFavFab.visibility = View.GONE
+        binding.showFavActionText.visibility = View.GONE
+        isAllFabsVisible = false
+
+        binding.moreFab.shrink()
+    }
+
+    fun showAllFab() {
+        binding.addFavouriteFab.visibility = View.VISIBLE
+        binding.addFavActionText.visibility = View.VISIBLE
+        binding.showFavFab.visibility = View.VISIBLE
+        binding.showFavActionText.visibility = View.VISIBLE
+        binding.moreFab.extend()
+        isAllFabsVisible = true
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (activity as AppCompatActivity).supportActionBar?.title = "Weather"
 
         setupObservers()
 
+        hideAllFab()
+        binding.moreFab.shrink()
+
         binding.showFavFab.setOnClickListener {
             findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
+        }
+
+        binding.moreFab.setOnClickListener {
+            if (!isAllFabsVisible) {
+                showAllFab()
+            } else {
+                hideAllFab()
+            }
         }
 
         binding.addFavouriteFab.setOnClickListener {
@@ -92,11 +123,14 @@ class FirstFragment : Fragment() {
 
                 } else {
                     weatherViewModel._isLoading.value = false
+
                     if (data.isNotEmpty()) {
-                        setUpViews(data)
+                        weatherViewModel._successResponse.value = data
                     } else {
                         binding.errorText.isVisible = true
                     }
+
+
                 }
             }
         }
@@ -125,21 +159,17 @@ class FirstFragment : Fragment() {
 
         weatherForecast.map { currentWeatherEntitiy ->
 
-            binding.lastUpdateTextview.text =
-                "Last Updated: " + currentWeatherEntitiy.lastUpdated
+            binding.lastUpdateTextview.text = "Last Updated: " + currentWeatherEntitiy.lastUpdated
 
             binding.weatherDescriptionTextview.text = currentWeatherEntitiy.weatherDesc
 
             binding.temperatureTextview.text = currentWeatherEntitiy.temperature.toString()
 
-            binding.maximumTemperatureTitle.text =
-                currentWeatherEntitiy.temperatureMax.toString()
+            binding.maximumTemperatureTitle.text = currentWeatherEntitiy.temperatureMax.toString()
 
-            binding.minimumTemperatureTexview.text =
-                currentWeatherEntitiy.temperatureMin.toString()
+            binding.minimumTemperatureTexview.text = currentWeatherEntitiy.temperatureMin.toString()
 
-            binding.currentTemperatureTextview.text =
-                currentWeatherEntitiy.temperature.toString()
+            binding.currentTemperatureTextview.text = currentWeatherEntitiy.temperature.toString()
 
             setBackground(
                 requireActivity(),

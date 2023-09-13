@@ -9,7 +9,6 @@ import com.valentinerutto.weather.utils.Forecast
 import com.valentinerutto.weather.utils.Resource
 import com.valentinerutto.weather.utils.Weather
 import com.valentinerutto.weather.utils.WeatherForecast
-import com.valentinerutto.weather.utils.getCurrentDateTime
 import com.valentinerutto.weather.utils.map
 import com.valentinerutto.weather.utils.mapTemp
 import com.valentinerutto.weather.utils.mapToEntity
@@ -44,7 +43,7 @@ class WeatherRepository(
     }
 
     suspend fun getWeatherAndForecastData(
-        latitude: String, longitude: String, appId: String
+        latitude: String, longitude: String, appId: String, isRefresh: Boolean
     ): Resource<List<DailyWeatherEntity>> {
 
         val weatherResource = withContext(NonCancellable) {
@@ -68,17 +67,24 @@ class WeatherRepository(
 
             val weatherList = weatherDao.getSavedWeather()
 
-            if (weatherList.isNotEmpty()
-                && weatherList[0].lastUpdated
-                != getCurrentDateTime()
-            ) {
-                weatherDao.deleteAll()
+//            if (isRefresh) {
+//                refreshWeatherData()
+//            } else {
+//
+//
+//            }
+
+            if (weatherList.isNotEmpty()) {
+                return Resource.success(
+                    data = weatherList
+                )
             }
+
 
             weatherDao.insert(entity)
 
             Resource.success(
-                data = weatherDao.getSavedWeather()
+                data = weatherList
             )
         }
     }
@@ -92,8 +98,8 @@ class WeatherRepository(
         return weatherDao.getSavedWeather()
     }
 
-    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity) {
-        weatherDao.update(dailyWeatherEntity)
+    suspend fun refreshWeatherData() {
+        weatherDao.deleteAll()
     }
 }
 

@@ -281,6 +281,31 @@
         app:layout_constraintEnd_toStartOf="@+id/add_favourite_fab"
         app:layout_constraintTop_toTopOf="@+id/add_favourite_fab" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/refresh_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/teal_200"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/add_favourite_fab"
+        app:layout_constraintEnd_toEndOf="@+id/add_favourite_fab"
+        app:layout_constraintStart_toStartOf="@+id/add_favourite_fab"
+        app:srcCompat="@android:drawable/ic_menu_upload" />
+
+    <!--Action name text for the add person button-->
+    <!--Make sure that you are constraining this Text
+        to the add Person FAB button-->
+    <TextView
+        android:id="@+id/refresh_action_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="Refresh"
+        app:layout_constraintBottom_toBottomOf="@+id/refresh_fab"
+        app:layout_constraintEnd_toStartOf="@+id/refresh_fab"
+        app:layout_constraintTop_toTopOf="@+id/refresh_fab" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

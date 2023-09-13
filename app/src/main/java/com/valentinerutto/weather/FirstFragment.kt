@@ -51,8 +51,9 @@ class FirstFragment : Fragment() {
         binding.addFavActionText.visibility = View.GONE
         binding.showFavFab.visibility = View.GONE
         binding.showFavActionText.visibility = View.GONE
+        binding.refreshFab.visibility = View.GONE
+        binding.refreshActionText.visibility = View.GONE
         isAllFabsVisible = false
-
         binding.moreFab.shrink()
     }
 
@@ -61,6 +62,8 @@ class FirstFragment : Fragment() {
         binding.addFavActionText.visibility = View.VISIBLE
         binding.showFavFab.visibility = View.VISIBLE
         binding.showFavActionText.visibility = View.VISIBLE
+      //  binding.refreshFab.visibility = View.VISIBLE
+        //binding.refreshActionText.visibility = View.VISIBLE
         binding.moreFab.extend()
         isAllFabsVisible = true
 
@@ -69,7 +72,6 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.title = "Weather"
-
         setupObservers()
 
         hideAllFab()
@@ -85,6 +87,9 @@ class FirstFragment : Fragment() {
             } else {
                 hideAllFab()
             }
+        }
+        binding.refreshFab.setOnClickListener {
+            refreshData()
         }
 
         binding.addFavouriteFab.setOnClickListener {
@@ -118,18 +123,15 @@ class FirstFragment : Fragment() {
 
                 if (checkForInternet(requireActivity())) {
                     weatherViewModel.fetchSaveWeather(
-                        DEFAULT_LATITUDE, DEFAULT_LONGITUDE
+                        DEFAULT_LATITUDE, DEFAULT_LONGITUDE, isRefresh = false
                     )
 
                 } else {
                     weatherViewModel._isLoading.value = false
 
-                    if (data.isNotEmpty()) {
-                        weatherViewModel._successResponse.value = data
-                    } else {
+                    if (data.isEmpty()) {
                         binding.errorText.isVisible = true
                     }
-
 
                 }
             }
@@ -149,6 +151,24 @@ class FirstFragment : Fragment() {
             binding.weatherProgressBar.isVisible = showLoading
         }
 
+    }
+
+    private fun refreshData() {
+        lifecycleScope.launch {
+            weatherViewModel.refreshWeatherData()
+
+            if (checkForInternet(requireActivity())) {
+
+                weatherViewModel.fetchSaveWeather(
+                    DEFAULT_LATITUDE, DEFAULT_LONGITUDE, isRefresh = true
+                )
+
+            } else {
+                Toast.makeText(
+                    requireActivity(), "Connect to internet to refresh Data", Toast.LENGTH_LONG
+                ).show()
+            }
+        }
     }
 
     private fun setUpViews(
@@ -187,6 +207,7 @@ class FirstFragment : Fragment() {
         }
 
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

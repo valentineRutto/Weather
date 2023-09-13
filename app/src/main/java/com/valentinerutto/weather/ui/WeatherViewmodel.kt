@@ -35,11 +35,11 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
         get() = _favouriteList
 
     suspend fun getWeatherAndForecast(
-        latitude: String, longitude: String
+        latitude: String, longitude: String,isRefresh: Boolean
     ) {
 
         val resource = repository.getWeatherAndForecastData(
-            latitude, longitude, BuildConfig.OPEN_WEATHER_API_KEY
+            latitude, longitude, BuildConfig.OPEN_WEATHER_API_KEY, isRefresh
         )
 
         when (resource.status) {
@@ -55,14 +55,14 @@ class WeatherViewmodel(private val repository: WeatherRepository) : ViewModel() 
     }
 
 
-    fun fetchSaveWeather(latitude: String, longitude: String) {
+    fun fetchSaveWeather(latitude: String, longitude: String,isRefresh:Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            getWeatherAndForecast(latitude, longitude)
+            getWeatherAndForecast(latitude, longitude,isRefresh )
         }
     }
 
-    suspend fun updateWeatherData(dailyWeatherEntity: DailyWeatherEntity) {
-        return repository.updateWeatherData(dailyWeatherEntity)
+    suspend fun refreshWeatherData() {
+        return repository.refreshWeatherData()
     }
 
     suspend fun getSavedData(

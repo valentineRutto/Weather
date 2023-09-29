@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.valentinerutto.weather.databinding.FragmentSecondBinding
+import com.valentinerutto.weather.databinding.FragmentFavouriteWeatherBinding
 import com.valentinerutto.weather.ui.FavoriteAdapter
 import com.valentinerutto.weather.ui.WeatherViewmodel
 import com.valentinerutto.weather.utils.DefaultLocation
@@ -17,9 +17,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
-class SecondFragment : Fragment() {
+class FavouriteWeatherFragment : Fragment() {
 
-    private var _binding: FragmentSecondBinding? = null
+    private var _binding: FragmentFavouriteWeatherBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -32,7 +32,7 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentFavouriteWeatherBinding.inflate(inflater, container, false)
         return binding.root
 
     }

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.valentinerutto.weather.data.local.entities.DailyWeatherEntity
-import com.valentinerutto.weather.databinding.FragmentFirstBinding
+import com.valentinerutto.weather.databinding.FragmentWeatherBinding
 import com.valentinerutto.weather.ui.ForecastAdapter
 import com.valentinerutto.weather.ui.WeatherViewmodel
 import com.valentinerutto.weather.utils.checkForInternet
@@ -22,10 +22,10 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+class WeatherFragment : Fragment() {
     private lateinit var weatherAdapter: ForecastAdapter
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentWeatherBinding? = null
     private val weatherViewModel by sharedViewModel<WeatherViewmodel>()
 
     //Düsseldorf
@@ -41,7 +41,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -71,7 +71,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as AppCompatActivity).supportActionBar?.title = "Weather"
+        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.weather)
         setupObservers()
 
         hideAllFab()
@@ -102,7 +102,6 @@ class FirstFragment : Fragment() {
             }
 
         }
-
     }
 
     private fun setupObservers() {
@@ -110,12 +109,9 @@ class FirstFragment : Fragment() {
 
         weatherViewModel.location.observe(viewLifecycleOwner) {
 
-
             DEFAULT_LATITUDE = it.latitude
 
             DEFAULT_LONGITUDE = it.longitude
-
-
 
             lifecycleScope.launch {
 
@@ -200,8 +196,8 @@ class FirstFragment : Fragment() {
             )
         }
 
-
         weatherAdapter = ForecastAdapter()
+
         binding.weeklyForecastRecyclerview.adapter = weatherAdapter.apply {
             submitList(weatherForecast)
         }
